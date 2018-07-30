@@ -1,0 +1,34 @@
+{
+  "name": "scraper",
+  "version": "1.0.0",
+  "description": "web scraper",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StewartBC/Scraper.git"
+  },
+  "keywords": [
+    "web",
+    "scraper",
+    "reddit"
+  ],
+  "author": "Stewart Capps",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StewartBC/Scraper/issues"
+  },
+  "homepage": "https://github.com/StewartBC/Scraper#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0",
+    "mongoose": "^5.2.5",
+    "morgan": "^1.9.0",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2"
+  }
+}

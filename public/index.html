@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <title>Reddit Scraper</title>
+  <style>
+    .jumbotron {
+      background-color: #457B9D;
+    }
+
+    label {
+      font-size: 24px;
+    }
+
+    body {
+      background-color: #6693AE;
+      color: white;
+    }
+
+    .card-header {
+      background-color: #457B9D;
+    }
+
+    .btn {
+      background-color: #457B9D;
+    }
+
+    .btn-link {
+      color: white;
+    }
+
+    .card-body {
+      background-color: #5587A5;
+    }
+
+    a {
+      color: white;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="wrapper">
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-4">Reddit Scraper</h1>
+        <p class="lead">This is a web scraper designed to scrape the top posts from your selected subreddit.</p>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <form>
+          <div class="form-group">
+            <label for="subredditInput">Subreddit</label>
+            <input class="form-control" id="subredditInput" placeholder="Enter subreddit">
+          </div>
+          <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+      <div id="results" class="col-md-6">
+        <!-- <div class="accordion" id="resultsAccordion">
+          <div class="card">
+            <div class="card-header" id="headingOne">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false"
+                  aria-controls="collapseOne">
+                  Collapsible Group Item #1
+                </button>
+              </h5>
+            </div>
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#resultsAccordion">
+              <div class="card-body">
+                <a href="https://old.reddit.com/r/leagueoflegends/comments/92fieb/splyce_vs_g2_esports_eu_lcs_2018_summer_week_6/?st=jk4qbrl3&sh=c31e12ab"
+                  target="_blank">
+                  <h4>Splyce vs. G2 Esports / EU LCS 2018 Summer - Week 6 / Post-Match Discussion</h4>
+                </a>
+                <p>
+                  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseComments" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    Show Comments
+                  </button>
+                  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseAdd" aria-expanded="false" aria-controls="collapseExample">
+                    Add Comment
+                  </button>
+                </p>
+                <div class="collapse" id="collapseComments">
+                  <div class="card card-body">
+                    <h5>Darkin_Ascendance</h5>
+                    <p>G2 demolished Splyce in this game... but Deficio was the bigger savage.</p>
+                  </div>
+                </div>
+                </p>
+                <div class="collapse" id="collapseAdd">
+                  <div class="card card-body">
+                    <form>
+                      <div class="form-group">
+                        <label for="nameInput">Name</label>
+                        <input class="form-control" id="nameInput" placeholder="Enter your name">
+                      </div>
+                      <div class="form-group">
+                        <label for="commentInput">Enter your comment</label>
+                        <textarea class="form-control" id="commentInput" rows="3"></textarea>
+                      </div>
+                      <button id="submitComment" type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
