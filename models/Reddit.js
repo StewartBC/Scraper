@@ -13,7 +13,13 @@ var RedditSchema = new Schema({
     type: String,
     required: true
   },
-  comments: []
+  comments: [
+    {
+      name: String,
+      text: String,
+      title: String
+    }
+  ]
 });
 
 var Reddit = mongoose.model("Reddit", RedditSchema);
