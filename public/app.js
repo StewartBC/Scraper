@@ -6,16 +6,17 @@ $("#submit").click(function (event) {
   $.ajax({
     type: "GET",
     url: `/scrapes/${subreddit}`
-  }).then(function(results) {
+  }).then(function (results) {
     for (let k = 0; k < results.length; k++) {
-      $("#results").append(
-        `<div class="accordion" id="accordion${k}">
+      if (results[k].comments.length > 0) {
+        $("#results").append(
+          `<div class="accordion" id="accordion${k}">
         <div class="card">
           <div class="card-header">
             <h5 class="mb-0">
               <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse${k}" aria-expanded="false"
                 aria-controls="collapse${k}">
-                Collapsible Group Item #1
+                Thread #${k + 1}
               </button>
             </h5>
           </div>
@@ -36,11 +37,11 @@ $("#submit").click(function (event) {
               </p>
               <div class="collapse" id="collapseComments${k}">
               ${results[k].comments.forEach(function (comment) {
-                    `<div class="card card-body>
+            `<div class="card card-body>
                     <h5>${comment.name}</h5>
                     <p>${comment.text}</p>
                     </div>`
-              })}
+          })}
               </div>
               </p>
               <div class="collapse" id="collapseAdd${k}">
@@ -54,7 +55,7 @@ $("#submit").click(function (event) {
                       <label for="commentInput">Enter your comment</label>
                       <textarea class="form-control" id="commentInput" rows="3"></textarea>
                     </div>
-                    <button data-title="${results[k].title}" type="submit" class="submitComment btn btn-primary">Submit</button>
+                    <button data-title="${results[k].title}" data-id=${k} type="submit" class="submitComment btn btn-primary">Submit</button>
                   </form>
                 </div>
               </div>
@@ -62,20 +63,88 @@ $("#submit").click(function (event) {
           </div>
         </div>
       </div>`)
+      } else {
+        $("#results").append(
+          `<div class="accordion" id="accordion${k}">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse${k}" aria-expanded="false"
+                        aria-controls="collapse${k}">
+                        Thread #${k + 1}
+                      </button>
+                    </h5>
+                  </div>
+                  <div id="collapse${k}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion${k}">
+                    <div class="card-body">
+                      <a href="${results[k].link}"
+                        target="_blank">
+                        <h4>${results[k].title}</h4>
+                      </a>
+                      <p>
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseComments${k}" aria-expanded="false"
+                          aria-controls="collapseComments${k}">
+                          Show Comments
+                        </button>
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseAdd${k}" aria-expanded="false" aria-controls="collapseAdd${k}">
+                          Add Comment
+                        </button>
+                      </p>
+                      <div class="collapse" id="collapseComments${k}">
+                      </div>
+                      <div class="collapse" id="collapseAdd${k}">
+                        <div class="card card-body">
+                          <form>
+                            <div class="form-group">
+                              <label for="nameInput">Name</label>
+                              <input class="form-control nameInput" placeholder="Enter your name">
+                            </div>
+                            <div class="form-group">
+                              <label for="commentInput">Enter your comment</label>
+                              <textarea class="form-control commentInput" rows="3"></textarea>
+                            </div>
+                            <button data-title="${results[k].title}" data-id=${k} type="submit" class="submitComment btn btn-primary">Submit</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>`)
+      }
     }
   });
 });
 
-$(document).click(".submitComment", function(event) {
+$(document).on("click", ".submitComment", function (event) {
   event.preventDefault();
+  $(".nameInput").empty();
+  $(".commentInput").empty();
+  const num = $(this).attr("data-id");
   const userComment = {
-    name: $("#nameInput").val().trim(),
-    text: $("#commentInput").val().trim(),
+    name: $(".nameInput").val().trim(),
+    text: $(".commentInput").val().trim(),
     title: $(this).attr("data-title")
   }
+  $("#collapseComments0").append(
+    `<div class="card card-body"> 
+    <h5>${userComment.name}</h5>
+    <p>${userComment.text}</p>
+    </div>`);
+  console.log(userComment);
+  console.log(subreddit);
+  console.log(num);
+  console.log(`#collapseComments${num}`);
   $.ajax({
     type: "POST",
-    url: `/scrapes/${subreddit}`,
+    url: "/scrapes",
     data: userComment
-  })
+  }).then(function() {
+    $(`#collapseComments${num}`).append(
+      `<div class="card card-body">
+      <h5>${userComment.name}</h5>
+      <p>${userComment.text}</p>
+      </div>`
+    );
+  });
 });  

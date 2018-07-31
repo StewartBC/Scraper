@@ -5,6 +5,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const db = require("./models");
+const Reddit = require("./models/Reddit.js");
 const PORT = 3000;
 const app = express();
 
@@ -13,71 +14,56 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 mongoose.connect("mongodb://localhost/scraper");
 
-app.get("/scrapes/:subreddit", function(req, res) {
+app.get("/scrapes/:subreddit", function (req, res) {
   const subreddit = req.params.subreddit;
+  const results = [];
   request(`https://old.reddit.com/r/${subreddit}`, function (error, response, html) {
     const C = cheerio.load(html);
     console.log(C);
-    const results = [];
-    const comments = [];
     C("p.title").each(function (i, element) {
-      const link = `https://old.reddit.com${C(element).children().attr("href")}`;
+      let link = "";
+      if (C(element).children().attr("href").startsWith("/r/")) {
+        link = `https://old.reddit.com${C(element).children().attr("href")}`;
+      } else {
+        link = C(element).children().attr("href");
+      }
       console.log(link);
       const title = C(element).text();
       console.log(title);
       const elementObject = {
-        name: "",
-        text: ""
+        subreddit: subreddit,
+        title: title,
+        link: link
       }
-      request(link, function (error, response, html) {
-        console.log(html);
-        const c = cheerio.load(html);
-        c("div.md").each(function (i, element) {
-          elementObject.text = element.children("p").text();
-        });
-        c("a.author").each(function (i, element) {
-          elementObject.name = element.text();
-        });
-      }).then(function () {
-        console.log(elementObject);
-        comments.push(elementObject);
-        results.push({
-          subreddit: subreddit,
-          title: title,
-          link: link,
-          topComment: comments[0]
-        });
-      }).then(function () {
-        db.Reddit.find({}).then(function (reddits) {
-          const titles = [];
-          reddits.forEach(function (reddit) {
-            titles.push(reddit.title);
-          });
-          results.forEach(function (index) {
-            for (let j = 0; j < titles.length; j++) {
-              if (index.title === titles[j]) {
-                results.splice(j, 1);
-              }
-            }
-          });
-        });
+      results.push(elementObject);
+    })
+    Reddit.find({}).then(function (reddits) {
+      const titles = [];
+      reddits.forEach(function (reddit) {
+        titles.push(reddit.title);
       });
-    }).then(function () {
-      results.forEach(function (article) {
-        db.Reddit.create(article).then(function () {
-          db.Reddit.find({ subreddit: subreddit }).then(function (dbReddits) {
-            res.json(dbReddits);
-          });
+      for (let i = 0; i < results.length; i++) {
+        if (titles.indexOf(results[i].title) > 0) {
+          results.splice(i, 1);
+        }
+      }
+    });
+  }).then(function () {
+    results.forEach(function (article) {
+      Reddit.create(article).then(function () {
+        Reddit.find({ subreddit: subreddit }).then(function (dbReddits) {
+          res.json(dbReddits);
         });
       });
     });
   });
 });
 
-app.post("/scrapes/:subreddit", function(req, res) {
-  db.Reddit.update({ title: req.body.title} , { $push: { comments: userComment } });
+app.post("/scrapes", function (req, res) {
+  console.log(req.body);
+  Reddit.findOneAndUpdate({ title: req.body.title }, { $push: { comments: req.body } });
 });
 
-app.listen(PORT, function() {
+app.listen(PORT, function () {
   console.log("App running on port " + PORT + "!");
 });
