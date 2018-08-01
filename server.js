@@ -37,13 +37,16 @@ app.get("/scrapes/:subreddit", function (req, res) {
       }
       results.push(elementObject);
     })
-    Reddit.find({}).then(function (reddits) {
+    return Reddit.find({}).then(function (reddits) {
       const titles = [];
       reddits.forEach(function (reddit) {
         titles.push(reddit.title);
       });
+      console.log(titles[0]);
+      console.log(results[0].title);
       for (let i = 0; i < results.length; i++) {
         if (titles.indexOf(results[i].title) > 0) {
+          console.log("splicing duplicate");
           results.splice(i, 1);
         }
       }
@@ -54,6 +57,11 @@ app.get("/scrapes/:subreddit", function (req, res) {
         Reddit.find({ subreddit: subreddit }).then(function (dbReddits) {
           res.json(dbReddits);
         });
+      }).catch(function(err) {
+        Reddit.find({ subreddit: subreddit }).then(function (dbReddits) {
+          res.json(dbReddits);
+        });
+         console.log("skip dupe");
       });
     });
   });
@@ -61,7 +69,14 @@ app.get("/scrapes/:subreddit", function (req, res) {
 
 app.post("/scrapes", function (req, res) {
   console.log(req.body);
-  Reddit.findOneAndUpdate({ title: req.body.title }, { $push: { comments: req.body } });
+  Reddit.findOne({ title: req.body.title }, function(err, result) {
+    result.comments.push(req.body);
+    result.save(function(err) {
+      if (err) return console.log(err);
+      console.log('Success!');
+      res.end();
+    })
+  });
 });
 
 app.listen(PORT, function () {

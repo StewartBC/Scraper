@@ -7,6 +7,7 @@ $("#submit").click(function (event) {
     type: "GET",
     url: `/scrapes/${subreddit}`
   }).then(function (results) {
+    console.log(results);
     for (let k = 0; k < results.length; k++) {
       if (results[k].comments.length > 0) {
         $("#results").append(
@@ -37,11 +38,13 @@ $("#submit").click(function (event) {
               </p>
               <div class="collapse" id="collapseComments${k}">
               ${results[k].comments.forEach(function (comment) {
-            `<div class="card card-body>
-                    <h5>${comment.name}</h5>
-                    <p>${comment.text}</p>
-                    </div>`
-          })}
+              $(`#collapseComments${k}`).append(
+                `<div class="card card-body">
+              <h5>${comment.name}</h5>
+               <p>${comment.text}</p>
+               </div>`
+                );
+              })}
               </div>
               </p>
               <div class="collapse" id="collapseAdd${k}">
@@ -126,11 +129,6 @@ $(document).on("click", ".submitComment", function (event) {
     text: $(".commentInput").val().trim(),
     title: $(this).attr("data-title")
   }
-  $("#collapseComments0").append(
-    `<div class="card card-body"> 
-    <h5>${userComment.name}</h5>
-    <p>${userComment.text}</p>
-    </div>`);
   console.log(userComment);
   console.log(subreddit);
   console.log(num);
@@ -139,7 +137,7 @@ $(document).on("click", ".submitComment", function (event) {
     type: "POST",
     url: "/scrapes",
     data: userComment
-  }).then(function() {
+  }).then(function () {
     $(`#collapseComments${num}`).append(
       `<div class="card card-body">
       <h5>${userComment.name}</h5>

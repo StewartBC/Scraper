@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-var RedditSchema = new Schema({
-  subreddit: { 
+var CommentsSchema = new Schema({
+  name: {
     type: String,
     required: true
   },
@@ -9,17 +9,27 @@ var RedditSchema = new Schema({
     type: String,
     required: true
   },
+  text: {
+    type: String,
+    required: true
+  }
+});
+var RedditSchema = new Schema({
+  subreddit: { 
+    type: String,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true,
+    unique: true
+  },
   link: {
     type: String,
     required: true
   },
-  comments: [
-    {
-      name: String,
-      text: String,
-      title: String
-    }
-  ]
+  comments: [CommentsSchema]
+  
 });
 
 var Reddit = mongoose.model("Reddit", RedditSchema);
