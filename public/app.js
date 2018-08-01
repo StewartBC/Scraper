@@ -7,7 +7,7 @@ $("#submit").click(function (event) {
     type: "GET",
     url: `/scrapes/${subreddit}`
   }).then(function (results) {
-    for (let k = 0; k < results.length; k++) {
+    for (let k = 0; k < results.length; k++) {   
         $("#results").append(
           `<div class="accordion" id="accordion${k}">
         <div class="card">
@@ -48,7 +48,7 @@ $("#submit").click(function (event) {
                       <label for="commentInput">Enter your comment</label>
                       <textarea class="form-control" id="commentInput${k}" rows="3"></textarea>
                     </div>
-                    <button data-title="${results[k].title}" data-id=${k} type="submit" class="submitComment btn btn-primary">Submit</button>
+                    <button data-title="${results[k]._id}" data-id=${k} type="submit" class="submitComment btn btn-primary">Submit</button>
                   </form>
                 </div>
               </div>

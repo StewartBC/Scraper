@@ -44,6 +44,7 @@ app.get("/scrapes/:subreddit", function (req, res) {
     });
   }).then(function () {
     results.forEach(function (article, index) {
+      article.title.replace(/['"]+/g, '');
       Reddit.create(article).then(function () {
         Reddit.find({ subreddit: subreddit }).then(function (dbReddit) {
           if (index === results.length - 1) {
@@ -62,7 +63,7 @@ app.get("/scrapes/:subreddit", function (req, res) {
 });
 
 app.post("/scrapes", function (req, res) {
-  Reddit.findOne({ title: req.body.title }, function (err, result) {
+  Reddit.findOne({ _id: req.body.title }, function (err, result) {
     result.comments.push(req.body);
     result.save(function (err) {
       if (err) return console.log(err);
