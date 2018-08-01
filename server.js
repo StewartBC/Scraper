@@ -68,7 +68,6 @@ app.get("/scrapes/:subreddit", function (req, res) {
 });
 
 app.post("/scrapes", function (req, res) {
-  console.log(req.body);
   Reddit.findOne({ title: req.body.title }, function(err, result) {
     result.comments.push(req.body);
     result.save(function(err) {
