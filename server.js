@@ -65,8 +65,8 @@ app.post("/scrapes", function (req, res) {
   Reddit.findOne({ title: req.body.title }, function (err, result) {
     result.comments.push(req.body);
     result.save(function (err) {
-      // if (err) return console.log(err);
-      // console.log('Success!');
+      if (err) return console.log(err);
+      console.log('Success!');
       res.end();
     })
   });
