@@ -51,7 +51,6 @@ app.get("/scrapes/:subreddit", function (req, res) {
           }
         });
       }).catch(function (err) {
-        // console.log(err);
         Reddit.find({ subreddit: subreddit }).then(function (dbReddits) {
           if (index === results.length - 1) {
             res.json(dbReddits);
