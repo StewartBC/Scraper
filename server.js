@@ -12,8 +12,7 @@ const app = express();
 app.use(logger("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-// mongoose.connect("mongodb://localhost/scraper");
-// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
+
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scraper";
 
 mongoose.Promise = Promise;
@@ -25,60 +24,50 @@ app.get("/scrapes/:subreddit", function (req, res) {
   const results = [];
   request(`https://old.reddit.com/r/${subreddit}`, function (error, response, html) {
     const C = cheerio.load(html);
-    console.log(C);
     C("p.title").each(function (i, element) {
+      if (C(element).children().attr("href")) {
+      console.log(C(element).children().attr("href"));
       let link = "";
       if (C(element).children().attr("href").startsWith("/r/")) {
         link = `https://old.reddit.com${C(element).children().attr("href")}`;
       } else {
         link = C(element).children().attr("href");
       }
-      console.log(link);
       const title = C(element).text();
-      console.log(title);
       const elementObject = {
         subreddit: subreddit,
         title: title,
         link: link
       }
       results.push(elementObject);
-    })
-    return Reddit.find({}).then(function (reddits) {
-      const titles = [];
-      reddits.forEach(function (reddit) {
-        titles.push(reddit.title);
-      });
-      console.log(titles[0]);
-      console.log(results[0].title);
-      for (let i = 0; i < results.length; i++) {
-        if (titles.indexOf(results[i].title) > 0) {
-          console.log("splicing duplicate");
-          results.splice(i, 1);
-        }
-      }
+    }
     });
   }).then(function () {
-    results.forEach(function (article) {
+    results.forEach(function (article, index) {
       Reddit.create(article).then(function () {
-        Reddit.find({ subreddit: subreddit }).then(function (dbReddits) {
-          res.json(dbReddits);
+        Reddit.find({ subreddit: subreddit }).then(function (dbReddit) {
+          if (index === results.length - 1) {
+          res.json(dbReddit);
+          }
         });
-      }).catch(function(err) {
+      }).catch(function (err) {
+        // console.log(err);
         Reddit.find({ subreddit: subreddit }).then(function (dbReddits) {
-          res.json(dbReddits);
+          if (index === results.length - 1) {
+            res.json(dbReddits);
+            }
         });
-         console.log("skip dupe");
       });
     });
   });
 });
 
 app.post("/scrapes", function (req, res) {
-  Reddit.findOne({ title: req.body.title }, function(err, result) {
+  Reddit.findOne({ title: req.body.title }, function (err, result) {
     result.comments.push(req.body);
-    result.save(function(err) {
-      if (err) return console.log(err);
-      console.log('Success!');
+    result.save(function (err) {
+      // if (err) return console.log(err);
+      // console.log('Success!');
       res.end();
     })
   });
