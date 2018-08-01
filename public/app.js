@@ -42,11 +42,11 @@ $("#submit").click(function (event) {
                   <form>
                     <div class="form-group">
                       <label for="nameInput">Name</label>
-                      <input class="form-control" id="nameInput" placeholder="Enter your name">
+                      <input class="form-control nameInput" id="nameInput${k}" placeholder="Enter your name">
                     </div>
                     <div class="form-group">
                       <label for="commentInput">Enter your comment</label>
-                      <textarea class="form-control" id="commentInput" rows="3"></textarea>
+                      <textarea class="form-control" id="commentInput${k}" rows="3"></textarea>
                     </div>
                     <button data-title="${results[k].title}" data-id=${k} type="submit" class="submitComment btn btn-primary">Submit</button>
                   </form>
@@ -74,8 +74,8 @@ $(document).on("click", ".submitComment", function (event) {
   $(".commentInput").empty();
   const num = $(this).attr("data-id");
   const userComment = {
-    name: $(".nameInput").val().trim(),
-    text: $(".commentInput").val().trim(),
+    name: $(`#nameInput${num}`).val().trim(),
+    text: $(`#commentInput${num}`).val().trim(),
     title: $(this).attr("data-title")
   }
   $.ajax({
